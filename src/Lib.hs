@@ -7,7 +7,6 @@ data Turducken a =
   deriving (Eq, Show)
 
 instance Semigroup (Turducken a) where
-  Empty <> Empty = Empty
   Empty <> t     = t
   t     <> Empty = t
   (Node x left1 right1) <> (Node y left2 right2) =
