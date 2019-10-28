@@ -3,6 +3,9 @@ module Main where
 import           Test.QuickCheck
 import           Test.QuickCheck.Checkers
 import           Test.QuickCheck.Classes
+import           Test.Hspec
+import           Data.Foldable                  ( toList )
+
 import           Lib
 
 instance Arbitrary a => Arbitrary (Turducken a) where
@@ -28,3 +31,23 @@ main = do
   quickBatch $ functor funcTrigger
   quickBatch $ foldable foldTrigger
   quickBatch $ traversable traverseTrigger
+  hspec $ do
+    describe "Traversal order" $ do
+      it "toList should give preorder with subturduckins before children" $ do
+        toList
+            (Node
+              1
+              (Group [Node 2 Empty Empty, Node 3 Empty Empty]
+                     (Node 4 Empty Empty)
+                     (Node 5 Empty Empty)
+              )
+              (Group
+                [Node 6 Empty Empty, Node 7 Empty Empty]
+                (Node 8
+                      (Node 9 Empty Empty)
+                      (Node 10 (Node 11 Empty Empty) Empty)
+                )
+                (Node 12 Empty Empty)
+              )
+            )
+          `shouldBe` [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
