@@ -10,7 +10,7 @@ instance Arbitrary a => Arbitrary (Turducken a) where
   arbitrary = frequency
     [ (100, pure Empty)
     , (10, Node <$> arbitrary <*> arbitrary <*> arbitrary)
-    , (1, Container <$> arbitrary <*> arbitrary <*> arbitrary)
+    , (1, Group <$> arbitrary <*> arbitrary <*> arbitrary)
     ]
 
 instance Eq a => EqProp (Turducken a) where
