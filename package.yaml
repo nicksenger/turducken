@@ -24,10 +24,6 @@ dependencies:
 
 library:
   source-dirs: src
-  dependencies:
-  - hspec
-  - QuickCheck
-  - checkers
 
 executables:
   turducken-exe:
@@ -50,3 +46,6 @@ tests:
     - -with-rtsopts=-N
     dependencies:
     - turducken
+    - hspec
+    - QuickCheck
+    - checkers
