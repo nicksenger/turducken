@@ -11,23 +11,20 @@ data Turducken a =
 instance Semigroup (Turducken a) where
   Empty <> t     = t
   t     <> Empty = t
-  (Node x left1 right1) <> (Node y left2 right2) =
-    Group [(Node x left1 right1), (Node y left2 right2)] Empty Empty
-  (Node x left1 right1) <> (Group sub left2 right2) =
-    Group ((Node x left1 right1) : sub) left2 right2
-  (Group sub left1 right1) <> (Node x left2 right2) =
-    Group (sub ++ [(Node x left2 right2)]) left1 right1
-  (Group sub1 left1 right1) <> (Group sub2 left2 right2) =
-    Group (sub1 ++ sub2) (left1 <> left2) (right1 <> right2)
+  (Node x l1 r1) <> (Node y l2 r2) =
+    Group [(Node x l1 r1), (Node y l2 r2)] Empty Empty
+  (Node  x  l1 r1) <> (Group ts l2 r2) = Group ((Node x l1 r1) : ts) l2 r2
+  (Group ts l1 r1) <> (Node  x  l2 r2) = Group (ts ++ [(Node x l2 r2)]) l1 r1
+  (Group ts1 l1 r1) <> (Group ts2 l2 r2) =
+    Group (ts1 ++ ts2) (l1 <> l2) (r1 <> r2)
 
 instance Monoid (Turducken a) where
   mempty = Empty
 
 instance Functor Turducken where
-  fmap _ Empty               = Empty
-  fmap f (Node x left right) = Node (f x) (fmap f left) (fmap f right)
-  fmap f (Group sub left right) =
-    Group ((fmap . fmap) f sub) (fmap f left) (fmap f right)
+  fmap _ Empty          = Empty
+  fmap f (Node  x  l r) = Node (f x) (fmap f l) (fmap f r)
+  fmap f (Group ts l r) = Group ((fmap . fmap) f ts) (fmap f l) (fmap f r)
 
 instance Applicative Turducken where
   pure x = Node x Empty Empty
@@ -43,20 +40,14 @@ instance Monad Turducken where
   (Group ts l r) >>= f = Group (fmap (>>= f) ts) (l >>= f) (r >>= f)
 
 instance Foldable Turducken where
-  foldMap _ Empty = mempty
-  foldMap f (Node x left right) =
-    (f x) <> (foldMap f left) <> (foldMap f right)
-  foldMap f (Group xs left right) =
-    (foldr ((<>) . (foldMap f)) mempty xs)
-      <> (foldMap f left)
-      <> (foldMap f right)
+  foldMap _ Empty        = mempty
+  foldMap f (Node x l r) = (f x) <> (foldMap f l) <> (foldMap f r)
+  foldMap f (Group ts l r) =
+    (foldr ((<>) . (foldMap f)) mempty ts) <> (foldMap f l) <> (foldMap f r)
 
 instance Traversable Turducken where
   traverse _ Empty = pure Empty
-  traverse f (Node x left right) =
-    Node <$> (f x) <*> (traverse f left) <*> (traverse f right)
-  traverse f (Group xs left right) =
-    Group
-      <$> ((traverse . traverse) f xs)
-      <*> (traverse f left)
-      <*> (traverse f right)
+  traverse f (Node x l r) =
+    Node <$> (f x) <*> (traverse f l) <*> (traverse f r)
+  traverse f (Group ts l r) =
+    Group <$> ((traverse . traverse) f ts) <*> (traverse f l) <*> (traverse f r)
