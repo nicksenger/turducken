@@ -1,5 +1,7 @@
 module Lib where
 
+import           Control.Monad                  ( ap )
+
 data Turducken a =
   Empty |
   Node a (Turducken a) (Turducken a) |
@@ -26,6 +28,19 @@ instance Functor Turducken where
   fmap f (Node x left right) = Node (f x) (fmap f left) (fmap f right)
   fmap f (Group sub left right) =
     Group ((fmap . fmap) f sub) (fmap f left) (fmap f right)
+
+instance Applicative Turducken where
+  pure x = Node x Empty Empty
+  (<*>) = ap
+
+instance Monad Turducken where
+  return = pure
+  Empty          >>= f = Empty
+  (Node x l1 r1) >>= f = case (f x) of
+    Empty          -> Empty
+    Node  y  l2 r2 -> Node y (l2 <> (l1 >>= f)) (r2 <> (r1 >>= f))
+    Group ts l2 r2 -> Group ts (l2 <> (l1 >>= f)) (r2 <> (r1 >>= f))
+  (Group ts l r) >>= f = Group (fmap (>>= f) ts) (l >>= f) (r >>= f)
 
 instance Foldable Turducken where
   foldMap _ Empty = mempty

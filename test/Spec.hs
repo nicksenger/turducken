@@ -29,6 +29,8 @@ main = do
   quickBatch $ semigroup semiTrigger
   quickBatch $ monoid monoTrigger
   quickBatch $ functor funcTrigger
+  quickBatch $ applicative funcTrigger
+  quickBatch $ monad funcTrigger
   quickBatch $ foldable foldTrigger
   quickBatch $ traversable traverseTrigger
   hspec $ do
