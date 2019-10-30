@@ -1,4 +1,4 @@
-# turducken
+# Turducken
 
 Exposes the `Turducken` data type, which is a modified binary tree containing "group" nodes associated with a list of `Turducken`s instead of a value. The `drawTurducken` function is also provided to print `Turducken`s to the terminal:
 
@@ -81,4 +81,11 @@ Turkey
    |     |_____________|
    |______________________|
 
+```
+
+## Commands
+
+```sh
+stack test # runs the tests
+stack build # builds the project
 ```
