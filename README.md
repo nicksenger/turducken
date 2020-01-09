@@ -1,10 +1,10 @@
 # Turducken
 
-Exposes the `Turducken` data type, which is a modified binary tree containing "group" nodes associated with a list of `Turducken`s instead of a value. The `drawTurducken` function is also provided to print `Turducken`s to the terminal:
+Exposes the `Turducken` data type, which is a modified binary tree containing "group" nodes associated with a list of `Turducken`s in addition to a value. The `drawTurducken` function is also provided to print `Turducken`s to the terminal:
 
 
 ```haskell
-λ: basicTurducken = Node "Turkey" (Group [(Node "Duck" (Group [(Node "Chicken") Empty Empty] Empty Empty) Empty)] Empty Empty) Empty
+λ: basicTurducken = Node "Turkey" (Group "Group 1" [(Node "Duck" (Group "Group 2" [(Node "Chicken") Empty Empty] Empty Empty) Empty)] Empty Empty) Empty
 λ: putStrLn $ (++) "\n" $ drawTurducken $ basicTurducken
 
 Turkey
@@ -22,7 +22,7 @@ Turkey
 ```
 
 
-`Turducken` is a member of the `Semigroup`, `Monoid`, `Functor`, `Applicative`, `Monad`, `Foldable`, and `Traversable` typeclasses:
+`Turducken` is a member of the `Functor`, `Foldable`, and `Traversable` typeclasses. Additionally, if the turducken's group type is an instance of `Monoid`, that turducken is also a `Semigroup`, `Monoid`, `Applicative` and `Monad`:
 
 ```haskell
 λ: putStrLn $ (++) "\n" $ drawTurducken $ basicTurducken <> basicTurducken
