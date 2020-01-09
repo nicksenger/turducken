@@ -8,21 +8,21 @@ import           Data.Foldable                  ( toList )
 
 import           Lib
 
-instance Arbitrary a => Arbitrary (Turducken a) where
+instance (Arbitrary a, Arbitrary b) => Arbitrary (Turducken a b) where
   arbitrary = frequency
     [ (100, pure Empty)
     , (10, Node <$> arbitrary <*> arbitrary <*> arbitrary)
-    , (1, Group <$> arbitrary <*> arbitrary <*> arbitrary)
+    , (1, Group <$> arbitrary <*> arbitrary <*> arbitrary <*> arbitrary)
     ]
 
-instance Eq a => EqProp (Turducken a) where
+instance (Eq a, Eq b) => EqProp (Turducken a b) where
   (=-=) = eq
 
-semiTrigger = undefined :: (Turducken (String, String, Int), Int)
-monoTrigger = undefined :: (Turducken (String, String, Int), String)
-funcTrigger = undefined :: Turducken (String, String, Int)
-foldTrigger = undefined :: Turducken (Int, Int, [Int], Int, Int)
-traverseTrigger = undefined :: Turducken (Int, Int, [Int])
+semiTrigger = undefined :: (Turducken String (String, String, Int), Int)
+monoTrigger = undefined :: (Turducken String (String, String, Int), String)
+funcTrigger = undefined :: Turducken String (String, String, Int)
+foldTrigger = undefined :: Turducken String (Int, Int, [Int], Int, Int)
+traverseTrigger = undefined :: Turducken String (Int, Int, [Int])
 
 main :: IO ()
 main = do
@@ -39,11 +39,13 @@ main = do
         toList
             (Node
               1
-              (Group [Node 2 Empty Empty, Node 3 Empty Empty]
+              (Group "Just a group"
+                     [Node 2 Empty Empty, Node 3 Empty Empty]
                      (Node 4 Empty Empty)
                      (Node 5 Empty Empty)
               )
               (Group
+                "Another group"
                 [Node 6 Empty Empty, Node 7 Empty Empty]
                 (Node 8
                       (Node 9 Empty Empty)
