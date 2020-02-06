@@ -6,7 +6,7 @@ import           Test.QuickCheck.Classes
 import           Test.Hspec
 import           Data.Foldable                  ( toList )
 
-import           Lib
+import           Turducken                      ( Turducken(..) )
 
 instance (Arbitrary a, Arbitrary b) => Arbitrary (Turducken a b) where
   arbitrary = frequency
